@@ -51,6 +51,11 @@ p {
     color: var(--secondary-color);
 }
 
+/* Solución: Color oscuro en las secciones */
+section {
+    color: #333;
+}
+
 /* 9. Selectores de identificador */
 #header {
     background-color: var(--primary-color);
