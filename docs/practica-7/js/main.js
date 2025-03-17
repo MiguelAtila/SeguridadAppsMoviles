@@ -7,10 +7,10 @@ let productos = [
   { nombre: "Sudadera", precio: 30, stock: 20 },
 ];
 
-//  Carrito de compras
+// 2. Carrito de compras
 let carrito = [];
 
-// 2. Función para agregar productos al carrito
+// 3. Función para agregar productos al carrito
 function agregarAlCarrito(productoNombre, cantidad) {
   if (cantidad <= 0) {
     console.log("❌ La cantidad debe ser mayor a 0.");
@@ -48,7 +48,38 @@ function agregarAlCarrito(productoNombre, cantidad) {
   }
 }
 
-// 3. Función para calcular el total del carrito (ahora imprime el total en la consola)
+// 4. Función para eliminar productos del carrito
+function eliminarDelCarrito(productoNombre, cantidad) {
+  for (let i = 0; i < carrito.length; i++) {
+    if (carrito[i].nombre === productoNombre) {
+      if (carrito[i].cantidad >= cantidad) {
+        carrito[i].cantidad -= cantidad;
+        carrito[i].total -= carrito[i].precio * cantidad;
+
+        // Reintegrar stock al inventario
+        for (let j = 0; j < productos.length; j++) {
+          if (productos[j].nombre === productoNombre) {
+            productos[j].stock += cantidad;
+            break;
+          }
+        }
+
+        if (carrito[i].cantidad === 0) {
+          carrito.splice(i, 1);
+        }
+
+        console.log(`🗑️ Se eliminaron ${cantidad} ${productoNombre}(s) del carrito.`);
+        return;
+      } else {
+        console.log(`❌ No tienes ${cantidad} ${productoNombre}(s) en el carrito.`);
+        return;
+      }
+    }
+  }
+  console.log(`❌ El producto "${productoNombre}" no está en el carrito.`);
+}
+
+// 5. Función para calcular el total del carrito
 function calcularTotalCarrito() {
   let total = 0;
   for (let i = 0; i < carrito.length; i++) {
@@ -57,7 +88,7 @@ function calcularTotalCarrito() {
   console.log(`🛒 Total actual del carrito: $${total.toFixed(2)}`);
 }
 
-// 4. Función para aplicar descuentos
+// 6. Función para aplicar descuentos
 function aplicarDescuento(total) {
   if (total > 100) {
     console.log("🎉 ¡Descuento aplicado del 10% por compras mayores a $100!");
@@ -66,11 +97,25 @@ function aplicarDescuento(total) {
   return total;
 }
 
-// 5. Simular el proceso de compra con `setTimeout`
+// 7. Función para mostrar cuenta regresiva antes de confirmar la compra
+function mostrarTiempoRestante(segundos, callback) {
+  let tiempo = segundos;
+
+  let intervalo = setInterval(() => {
+    console.log(`⏳ Compra confirmada en ${tiempo}...`);
+    tiempo--;
+
+    if (tiempo < 0) {
+      clearInterval(intervalo);
+      callback();
+    }
+  }, 1000);
+}
+
+// 8. Función para procesar la compra con cuenta regresiva
 function procesarCompra() {
   console.log("⏳ Procesando compra...");
-
-  setTimeout(() => {
+  mostrarTiempoRestante(3, () => {
     let totalCarrito = 0;
     for (let i = 0; i < carrito.length; i++) {
       totalCarrito += carrito[i].total;
@@ -80,5 +125,5 @@ function procesarCompra() {
 
     console.log(`💰 Total a pagar: $${totalConDescuento.toFixed(2)}`);
     console.log("✅ Compra realizada con éxito. ¡Gracias por tu compra!");
-  }, 3000);
+  });
 }
