@@ -7,3 +7,4 @@
 - [Práctica 3](practica-3.md)
 - [Práctica 4, 5](https://miguelatila.github.io/SeguridadAppsMoviles/cv-web/index.html)
 - [Práctica 6](https://miguelatila.github.io/SeguridadAppsMoviles/cv-web-v2/index.html)
+- [Práctica 7](https://miguelatila.github.io/SeguridadAppsMoviles/practica-7/index.html)
