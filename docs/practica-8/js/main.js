@@ -10,7 +10,7 @@ let productos = [
 // 2. Carrito de compras
 let carrito = [];
 
-// 3. Mostrar productos en la tienda con addEventListener
+// 3. Mostrar productos en la tienda
 function mostrarProductos() {
     let listaProductos = document.getElementById("lista-productos");
     listaProductos.innerHTML = "";
@@ -47,14 +47,30 @@ function mostrarCarrito() {
         let div = document.createElement("div");
         div.innerHTML = `
             <p><strong>${producto.nombre}</strong> - ${producto.cantidad} x $${producto.precio} = $${producto.total}</p>
-            <button class="eliminar" data-index="${index}">🗑️ Eliminar</button>
+            <button class="restar" data-index="${index}">➖</button>
+            <button class="sumar" data-index="${index}">➕</button>
+            <button class="eliminar" data-index="${index}">🗑️</button>
         `;
         listaCarrito.appendChild(div);
     });
 
     totalCarrito.innerText = `Total: $${total.toFixed(2)}`;
 
-    // Agregar eventos a los botones de eliminar
+    // Agregar eventos a los botones de modificar cantidad
+    document.querySelectorAll(".sumar").forEach(btn => {
+        btn.addEventListener("click", (event) => {
+            let index = event.target.dataset.index;
+            modificarCantidad(index, 1);
+        });
+    });
+
+    document.querySelectorAll(".restar").forEach(btn => {
+        btn.addEventListener("click", (event) => {
+            let index = event.target.dataset.index;
+            modificarCantidad(index, -1);
+        });
+    });
+
     document.querySelectorAll(".eliminar").forEach(btn => {
         btn.addEventListener("click", (event) => {
             let index = event.target.dataset.index;
@@ -92,19 +108,42 @@ function agregarAlCarrito(productoNombre, cantidad) {
     mostrarCarrito();
 }
 
-// 6. Eliminar producto del carrito
-function eliminarDelCarrito(index) {
+// 6. Modificar cantidad en el carrito con botones ➕ y ➖
+function modificarCantidad(index, cambio) {
     let producto = carrito[index];
 
-    productos.find(p => p.nombre === producto.nombre).stock += producto.cantidad;
+    let productoInventario = productos.find(p => p.nombre === producto.nombre);
+    
+    if (cambio === 1 && productoInventario.stock > 0) {
+        producto.cantidad += 1;
+        producto.total += producto.precio;
+        productoInventario.stock -= 1;
+    } else if (cambio === -1 && producto.cantidad > 1) {
+        producto.cantidad -= 1;
+        producto.total -= producto.precio;
+        productoInventario.stock += 1;
+    } else if (cambio === -1 && producto.cantidad === 1) {
+        eliminarDelCarrito(index);
+        return;
+    }
 
+    mostrarProductos();
+    mostrarCarrito();
+}
+
+// 7. Eliminar producto del carrito
+function eliminarDelCarrito(index) {
+    let producto = carrito[index];
+    let productoInventario = productos.find(p => p.nombre === producto.nombre);
+
+    productoInventario.stock += producto.cantidad;
     carrito.splice(index, 1);
 
     mostrarProductos();
     mostrarCarrito();
 }
 
-// 7. Procesar compra con cuenta regresiva (Corrección Final)
+// 8. Procesar compra con loader de 5 segundos
 function procesarCompra() {
     let mensajeCompra = document.getElementById("mensaje-compra");
 
@@ -114,53 +153,32 @@ function procesarCompra() {
     }
 
     let total = carrito.reduce((acc, item) => acc + item.total, 0);
-    let descuentoAplicado = total > 100 ? total * 0.1 : 0; // 10% de descuento si el total > $100
+    let descuentoAplicado = total > 100 ? total * 0.1 : 0;
     let totalFinal = total - descuentoAplicado;
-    let contador = 3;
 
-    function cuentaRegresiva() {
-        if (contador === 0) {
-            // ✅ Se muestra el mensaje final antes de vaciar el carrito
-            let mensajeFinal = `✅ Compra realizada con éxito.<br>`;
+    // Mostrar el loader
+    mensajeCompra.innerHTML = `<div class="loader"></div> Procesando compra...`;
 
-            if (descuentoAplicado > 0) {
-                mensajeFinal += `🎉 <strong>Descuento aplicado: $${descuentoAplicado.toFixed(2)}</strong><br>`;
-            }
+    setTimeout(() => {
+        mensajeCompra.innerHTML = `✅ Compra realizada con éxito.<br>`;
 
-            mensajeFinal += `💰 <strong>Total a pagar: $${totalFinal.toFixed(2)}</strong>`;
-
-            mensajeCompra.innerHTML = mensajeFinal;
-
-            // ✅ Agregar "Gracias por tu compra" después de 2 segundos
-            setTimeout(() => {
-                mensajeCompra.innerHTML += `<br>🎉 ¡Gracias por tu compra! 🛍️`;
-            }, 2000);
-
-            // ✅ Vaciar carrito después de mostrar el mensaje
-            setTimeout(() => {
-                carrito = [];
-                mostrarCarrito();
-            }, 2500);
-            
-            return;
+        if (descuentoAplicado > 0) {
+            mensajeCompra.innerHTML += `🎉 <strong>Descuento aplicado: $${descuentoAplicado.toFixed(2)}</strong><br>`;
         }
 
-        mensajeCompra.innerHTML = `⏳ Confirmando compra en <strong>${contador}</strong>...`;
-        contador--;
+        mensajeCompra.innerHTML += `💰 <strong>Total a pagar: $${totalFinal.toFixed(2)}</strong>`;
 
-        setTimeout(cuentaRegresiva, 1000);
-    }
+        setTimeout(() => {
+            mensajeCompra.innerHTML += `<br>🎉 ¡Gracias por tu compra! 🛍️`;
+        }, 2000);
 
-    cuentaRegresiva();
+        carrito = [];
+        mostrarCarrito();
+    }, 5000);
 }
 
-// 8. Verificar que el botón existe antes de añadir el evento
+// 9. Inicializar eventos al cargar la página
 document.addEventListener("DOMContentLoaded", () => {
-    let botonProcesar = document.getElementById("procesar-compra");
-    if (botonProcesar) {
-        botonProcesar.addEventListener("click", procesarCompra);
-    }
+    document.getElementById("procesar-compra").addEventListener("click", procesarCompra);
+    mostrarProductos();
 });
-
-// 9. Inicializar la tienda
-mostrarProductos();
