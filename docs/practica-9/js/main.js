@@ -1,4 +1,4 @@
-// 1. Arreglo de productos
+// 1. Productos
 let productos = [
     { nombre: "Camiseta", precio: 15, stock: 10 },
     { nombre: "Pantalón", precio: 20, stock: 17 },
@@ -7,10 +7,9 @@ let productos = [
     { nombre: "Sudadera", precio: 30, stock: 20 },
   ];
   
-  // 2. Carrito de compras
   let carrito = [];
   
-  // 3. Mostrar productos en la tienda
+  // Mostrar productos
   function mostrarProductos() {
     let listaProductos = document.getElementById("lista-productos");
     listaProductos.innerHTML = "";
@@ -32,7 +31,7 @@ let productos = [
     });
   }
   
-  // 4. Mostrar carrito
+  // Mostrar carrito
   function mostrarCarrito() {
     let listaCarrito = document.getElementById("lista-carrito");
     let totalCarrito = document.getElementById("total-carrito");
@@ -66,7 +65,6 @@ let productos = [
     });
   }
   
-  // 5. Agregar al carrito
   function agregarAlCarrito(nombre, cantidad) {
     let producto = productos.find(p => p.nombre === nombre);
     if (!producto || producto.stock < cantidad) {
@@ -87,7 +85,6 @@ let productos = [
     mostrarCarrito();
   }
   
-  // 6. Modificar cantidad
   function modificarCantidad(index, cambio) {
     let producto = carrito[index];
     let inventario = productos.find(p => p.nombre === producto.nombre);
@@ -109,7 +106,6 @@ let productos = [
     mostrarCarrito();
   }
   
-  // 7. Eliminar del carrito
   function eliminarDelCarrito(index) {
     let producto = carrito[index];
     let inventario = productos.find(p => p.nombre === producto.nombre);
@@ -119,7 +115,6 @@ let productos = [
     mostrarCarrito();
   }
   
-  // 8. Procesar compra con loader
   function procesarCompra() {
     let mensaje = document.getElementById("mensaje-compra");
   
@@ -149,13 +144,12 @@ let productos = [
     }, 5000);
   }
   
-  // 9. Iniciar app
   document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("procesar-compra").addEventListener("click", procesarCompra);
     mostrarProductos();
   });
   
-  // 10. Validación del registro
+  // Validación del formulario de registro
   const formRegistro = document.getElementById('form-registro');
   const regNombre = document.getElementById('reg-nombre');
   const regCorreo = document.getElementById('reg-correo');
@@ -175,23 +169,26 @@ let productos = [
     errorCorreo.textContent = '';
     errorPassword.textContent = '';
     errorConfirm.textContent = '';
-    exitoRegistro.textContent = '';
+    exitoRegistro.innerHTML = '';
   
     let valido = true;
-    const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   
-    if (!regNombre.value.trim()) {
-      errorNombre.textContent = '❌ El nombre es obligatorio.';
+    const regexNombre = /^[a-zA-ZÁÉÍÓÚáéíóúñÑ\s]+$/;
+    const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const regexPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+  
+    if (!regexNombre.test(regNombre.value.trim())) {
+      errorNombre.textContent = '❌ El nombre solo debe contener letras y espacios.';
       valido = false;
     }
   
     if (!regexCorreo.test(regCorreo.value.trim())) {
-      errorCorreo.textContent = '❌ El correo no es válido.';
+      errorCorreo.textContent = '❌ Ingresa un correo válido.';
       valido = false;
     }
   
-    if (regPassword.value.length < 8) {
-      errorPassword.textContent = '❌ La contraseña debe tener al menos 8 caracteres.';
+    if (!regexPassword.test(regPassword.value)) {
+      errorPassword.textContent = '❌ La contraseña debe tener mínimo 8 caracteres, con al menos una mayúscula, una minúscula, un número y un símbolo.';
       valido = false;
     }
   
@@ -201,7 +198,10 @@ let productos = [
     }
   
     if (valido) {
-      exitoRegistro.textContent = `✅ Registro exitoso. ¡Bienvenido, ${regNombre.value.trim()}!`;
-      formRegistro.reset();
+      exitoRegistro.innerHTML = `<div class="loader"></div> Enviando formulario...`;
+      setTimeout(() => {
+        exitoRegistro.innerHTML = `✅ Registro exitoso. ¡Bienvenido, ${regNombre.value.trim()}!`;
+        formRegistro.reset();
+      }, 5000);
     }
   });
