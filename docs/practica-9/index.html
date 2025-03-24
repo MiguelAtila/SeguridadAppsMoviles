@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Práctica 9</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Práctica 9</h1>
+  </header>
+
+  <main>
+    <section id="productos">
+      <h2>Productos Disponibles</h2>
+      <div id="lista-productos"></div>
+    </section>
+
+    <section id="carrito">
+      <h2>Carrito de Compras</h2>
+      <div id="lista-carrito"></div>
+      <p id="total-carrito">Total: $0.00</p>
+      <button id="procesar-compra">🛍️ Procesar Compra</button>
+      <p id="mensaje-compra"></p> 
+    </section>
+
+    <section id="registro">
+      <h2>Registro de Usuario</h2>
+      <form id="form-registro" novalidate>
+        <input type="text" id="reg-nombre" placeholder="Nombre completo" required />
+        <small id="error-nombre" class="error-msg"></small>
+
+        <input type="email" id="reg-correo" placeholder="Correo electrónico" required />
+        <small id="error-correo" class="error-msg"></small>
+
+        <input type="password" id="reg-password" placeholder="Contraseña (mínimo 8 caracteres)" required />
+        <small id="error-password" class="error-msg"></small>
+
+        <input type="password" id="reg-confirm" placeholder="Confirmar contraseña" required />
+        <small id="error-confirm" class="error-msg"></small>
+
+        <button type="submit">📝 Registrarse</button>
+        <p id="registro-exito" class="success-msg"></p>
+      </form>
+    </section>
+  </main>
+
+  <script src="./js/main.js"></script> 
+</body>
+</html>
