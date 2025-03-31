@@ -12,7 +12,8 @@ async function cargarProductos() {
     productos = data.map(prod => ({
       nombre: prod.title,
       precio: prod.price,
-      stock: Math.floor(Math.random() * 20) + 1
+      stock: Math.floor(Math.random() * 20) + 1,
+      image: prod.image // Se agrega la imagen
     }));
     mostrarProductos();
   } catch (error) {
@@ -20,7 +21,7 @@ async function cargarProductos() {
   }
 }
 
-// 2. Mostrar productos en la tienda
+// Mostrar productos en la tienda
 function mostrarProductos() {
   let listaProductos = document.getElementById("lista-productos");
   listaProductos.innerHTML = "";
@@ -28,6 +29,7 @@ function mostrarProductos() {
   productos.forEach((producto, index) => {
     let div = document.createElement("div");
     div.innerHTML = `
+      <img src="${producto.image}" alt="${producto.nombre}" width="100"><br>
       <p><strong>${producto.nombre}</strong> - $${producto.precio} (Stock: ${producto.stock})</p>
       <button class="agregar" data-index="${index}"> Agregar</button>
     `;
@@ -43,7 +45,7 @@ function mostrarProductos() {
   });
 }
 
-// 3. Mostrar productos en el carrito
+// Mostrar productos en el carrito
 function mostrarCarrito() {
   let listaCarrito = document.getElementById("lista-carrito");
   let totalCarrito = document.getElementById("total-carrito");
@@ -64,7 +66,6 @@ function mostrarCarrito() {
 
   totalCarrito.innerText = `Total: $${total.toFixed(2)}`;
 
-  // Eventos para modificar cantidad y eliminar
   document.querySelectorAll(".sumar").forEach(btn => {
     btn.addEventListener("click", (event) => modificarCantidad(event.target.dataset.index, 1));
   });
@@ -140,7 +141,6 @@ function procesarCompra() {
   let descuentoAplicado = total > 100 ? total * 0.1 : 0;
   let totalFinal = total - descuentoAplicado;
 
-  // Mostrar loader
   mensaje.innerHTML = `<div class="loader"></div> Procesando compra...`;
 
   setTimeout(() => {
@@ -162,20 +162,3 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("procesar-compra").addEventListener("click", procesarCompra);
   cargarProductos();
 });
-  
-// Función para cargar productos desde Fake Store API
-async function cargarProductos() {
-  try {
-    const res = await fetch("https://fakestoreapi.com/products");
-    const data = await res.json();
-    // Mapear productos: usamos title como nombre, price, y stock aleatorio
-    productos = data.map(prod => ({
-      nombre: prod.title,
-      precio: prod.price,
-      stock: Math.floor(Math.random() * 20) + 1
-    }));
-    mostrarProductos();
-  } catch (error) {
-    console.error("Error al cargar productos:", error);
-  }
-}
