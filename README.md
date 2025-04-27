@@ -12,5 +12,5 @@
 - [Práctica 9](https://miguelatila.github.io/SeguridadAppsMoviles/practica-9/index.html)
 - [Práctica 10](https://miguelatila.github.io/SeguridadAppsMoviles/practica-10/index.html)
 - [Práctica 11](mi-app.md)
-- [Práctica 12](modelado-app.md)
 - [Práctica 12.2](modelado-app2.md)
+- [Práctica 13](modelado-app2.md)
